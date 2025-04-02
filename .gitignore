@@ -1,7 +1,46 @@
-# Ignore everything
-*
-# But not these files
+# ----------------------------------------------------------------------------
+# Ignore Python bytecode & cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.dylib
+*.dll
+*.pyd
+
+# ----------------------------------------------------------------------------
+# Ignore virtual environment folders
+# (Assuming your venv is named venv/ or mystic_env/)
+venv/
+mystic_env/
+
+# ----------------------------------------------------------------------------
+# Distribution / packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# ----------------------------------------------------------------------------
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ----------------------------------------------------------------------------
+# OS and IDE ephemeral files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ----------------------------------------------------------------------------
+# Keep .gitignore & README
 !.gitignore
+!.gitattributes
 !README.md
-!requirements.txt
-!main.py
+
+# End of `.gitignore`
+# ----------------------------------------------------------------------------
