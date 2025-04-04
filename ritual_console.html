@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ritual Drop Console</title>
+  <style>
+    body {
+      background: radial-gradient(circle, #000 0%, #111 100%);
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #bc13fe;
+    }
+    .sigil {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      animation: pulse 4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      background: #222;
+      border: 1px solid #444;
+      color: #0f0;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      background: #bc13fe;
+      color: #000;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    audio {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ritual Drop Console</h1>
+  <div class="sigil">✶</div>
+  <input id="query" type="text" placeholder="Enter ritual search...">
+  <button onclick="castSearch()">Cast Spell</button>
+  <audio controls autoplay loop>
+    <source src="https://archive.org/download/flave-bohemien-original-mix/Flave%20-%20Bohemien%20%28Original%20Mix%29.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    function castSearch() {
+      const query = document.getElementById('query').value;
+      const encoded = encodeURIComponent(query);
+      const url = `https://duckduckgo.com/?q=${encoded}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>

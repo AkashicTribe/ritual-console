@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ritual Drop Console</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      background: radial-gradient(circle, #000 0%, #111 100%);
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #bc13fe;
+    }
+    .sigil {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      animation: pulse 4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      background: #222;
+      border: 1px solid #444;
+      color: #0f0;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      background: #bc13fe;
+      color: #000;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ritual Drop Console</h1>
+  <div class="sigil">✶</div>
+  <input id="query" type="text" placeholder="Enter ritual search or chain intent...">
+  <button onclick="castSearch()">Cast Spell</button>
+  <button onclick="connectWallet()">🔗 Bind Wallet</button>
+  <audio id="ritualAudio" loop>
+    <source id="trackSource" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    let provider = null;
+    let signer = null;
+
+    const trackMap = {
+      night: 'https://archive.org/download/flave-bohemien-original-mix/Flave%20-%20Bohemien%20%28Original%20Mix%29.mp3',
+      dawn: 'https://archive.org/download/flave-rituals-in-light/Flave%20-%20Rituals%20In%20Light.mp3',
+      day: 'https://archive.org/download/flave-dusk-drifter/Flave%20-%20Dusk%20Drifter.mp3',
+      dusk: 'https://archive.org/download/flave-ghost-train/Flave%20-%20Ghost%20Train.mp3'
+    };
+
+    function getTimePhase() {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 10) return 'dawn';
+      if (hour >= 10 && hour < 17) return 'day';
+      if (hour >= 17 && hour < 21) return 'dusk';
+      return 'night';
+    }
+
+    function autoSummonMusic() {
+      try {
+        const minute = new Date().getMinutes();
+        const sacredMoments = [1, 11, 22, 33, 44, 55];
+        if (!sacredMoments.includes(minute)) return;
+
+        const phase = getTimePhase();
+        const audio = document.getElementById('ritualAudio');
+        const source = document.getElementById('trackSource');
+        if (!audio || !source || !trackMap[phase]) return;
+
+        source.src = trackMap[phase];
+        audio.load();
+
+        setTimeout(() => {
+          audio.volume = 0.6;
+          audio.play()
+            .then(() => console.log(`Phase '${phase}' music activated.`))
+            .catch(err => console.warn('Autoplay blocked:', err));
+        }, 777);
+      } catch (err) {
+        console.error('Auto music error:', err);
+      }
+    }
+
+    window.addEventListener('load', () => setTimeout(autoSummonMusic, 2222));
+
+    async function connectWallet() {
+      try {
+        if (!window.ethereum) throw new Error('MetaMask not found.');
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        const address = await signer.getAddress();
+        alert(`Connected: ${address}`);
+      } catch (err) {
+        alert('Wallet connection error: ' + err.message);
+      }
+    }
+
+    function castSearch() {
+      const input = document.getElementById('query');
+      if (!input) return;
+
+      const query = input.value.trim();
+      if (!query) return alert('You must speak your query.');
+
+      const encoded = encodeURIComponent(query);
+      const url = `https://duckduckgo.com/?q=${encoded}`;
+      window.open(url, '_blank');
+
+      if (signer) {
+        signer.signMessage(`Ritual Invocation: ${query}`)
+          .then(signature => console.log('Signed message:', signature))
+          .catch(err => console.warn('Signing error:', err));
+      }
+    }
+  </script>
+</body>
+</html>
